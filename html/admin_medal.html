@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
+
+<head>
+<title>Medal Admin</title>
+<py-include="html/header_simple.html">
+</head>
+
+<body>
+
+<py-include="html/top.html">
+
+<py-exec="assert myCoach and myCoach.isAdmin(), 'You are not administrator!'">
+
+<h2>Team Medals</h2>
+<p>
+<table>
+
+<tr>
+<th>Team</th>
+<th>Coach</th>
+<th>Medals</th>
+<th colspan="3"></th>
+</tr>
+
+<py-if="teams.count()">
+
+<py-for="i, team in enumerate(teams)">
+
+<tr<py-if="i % 2"> class="shade"</py-if>>
+<td><a href="<py-eval="team.view()">"><py-eval="team.name or '<i>Unknown</i>'"></a></td>
+<td><a href="<py-eval="team.coach.view()">"><py-eval="team.coach.realname or '<i>Unknown</i>'"></a></td>
+<td>
+<py-for="medal in team.medals">
+<a href="/medal/delete?id=<py-eval="str(medal.id)">"><py-include="html/medal.html"></a>
+</py-for>
+</td>
+<td><a class="action" href="/medal/add?INTteamID=<py-eval="str(team.id)">&type=GOLD">[gold]</a></td>
+<td><a class="action" href="/medal/add?INTteamID=<py-eval="str(team.id)">&type=SILVER">[silver]</a></td>
+<td><a class="action" href="/medal/add?INTteamID=<py-eval="str(team.id)">&type=BRONZE">[bronze]</a></td>
+</tr>
+
+</py-for>
+
+</py-if><py-else>
+
+<tr>
+<td colspan="6"><i>No Teams</i></td>
+</tr>
+
+</py-else>
+
+</table>
+</p>
+
+<py-include="html/bottom.html">
+
+</body>
+
+</html>

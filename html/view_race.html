@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
+
+<head>
+<title>Race <py-eval="race.name"></title>
+<py-include="html/header_simple.html">
+</head>
+
+<body>
+
+<py-include="html/top.html">
+
+<h2><py-eval="race.name"></h2>
+<ul>
+<li>RR Cost: <py-eval="race.rrCost and str (race.rrCost) or '<b>Unknown</b>'"></li>
+</ul>
+
+<table>
+
+<tr>
+<th>Position</th>
+<th>MA</th>
+<th>ST</th>
+<th>AG</th>
+<th>AV</th>
+<th>Skills</th>
+<th>Normal</th>
+<th>Double</th>
+<th>Cost</th>
+<th>Max</th>
+</tr>
+
+<py-exec="racePositions = [rp for rp in race.positions if rp.max > 0]">
+
+<py-if="racePositions">
+
+<py-for="i, position in enumerate(racePositions)">
+
+<tr<py-if="i % 2"> class="shade"</py-if>>
+<td><py-eval="position.name"></td>
+<td><py-eval="str (position.ma)"></td>
+<td><py-eval="str (position.st)"></td>
+<td><py-eval="str (position.ag)"></td>
+<td><py-eval="str (position.av)"></td>
+<td><py-eval="', '.join ([s.name for s in positionSkills(position)])"></td>
+<td><py-eval="''.join ([n.abbreviation for n in normalAccess(position)])"></td>
+<td><py-eval="''.join ([n.abbreviation for n in doubleAccess(position)])"></td>
+<td><py-eval="str (position.cost)"></td>
+<td><py-eval="str (position.max)"></td>
+</tr>
+
+</py-for>
+
+</py-if><py-else>
+
+<tr>
+<td colspan="10"><i>No Positions</i></td>
+</tr>
+
+</py-else>
+
+</table>
+
+<h2><py-eval="race.name"> Teams</h2>
+
+<table>
+
+<tr>
+<th>Team</th>
+<th>Coach</th>
+<th>TV</th>
+</tr>
+
+<py-exec="raceTeams = [rt for rt in race.teams if not rt.isNew()]">
+
+<py-if="raceTeams">
+
+<py-for="i, team in enumerate(raceTeams)">
+
+<tr<py-if="i % 2"> class="shade"</py-if>>
+<td><a href="<py-eval="team.view()">"><py-eval="team.name"></a></td>
+<td><a href="<py-eval="team.coach.view()">"><py-eval="team.coach.realname or '<i>Unknown</i>'"></a></td>
+<td><py-eval="gpFormat(team.value())"></td>
+</tr>
+
+</py-for>
+
+</py-if><py-else>
+
+<tr>
+<td colspan="3"><i>No Teams</i></td>
+</tr>
+
+</py-else>
+
+</table>
+
+<py-include="html/bottom.html">
+
+</body>
+
+</html>

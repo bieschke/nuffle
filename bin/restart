@@ -1,0 +1,8 @@
+#!/bin/sh
+# Restart the Nuffle Blood Bowl Web Manager.
+
+set -e
+
+cd `dirname ${0}`
+./stop
+./start

@@ -1,0 +1,52 @@
+[global]
+
+# Which ip/host should the Nuffle web server run on?
+# The empty string indicates the broadcast address.
+server.socketHost: ""
+
+# Which port number should the Nuffle web server run on?
+server.socketPort: 8042
+
+# How many requests should we allow to queue up? The
+# Nuffle web server is single threaded, answering
+# requests serially one after the other, not in parallel.
+server.socketQueueSize: 13
+
+# See http://www.cherrypy.org/wiki/ServerEnvironment
+server.environment: "production"
+
+# Screen logging is useful when launching the web
+# server from the command line and interacting with
+# the application directly.
+server.logToScreen: True
+
+# The debug info filter will display timing/build
+# information at the bottom of every page. It's useful
+# to enable when working on performance/cost changes,
+# but otherwise it outputs html violating content.
+logDebugInfoFilter.on: False
+
+# Autoreload would be useful, but the current version of
+# CherryPy is bug ridden. This should remain disabled
+# until CherryPy fixes the flawed implementation.
+autoreload.on: False
+
+# Where should the Nuffle web server log to?
+server.logFile: "/home/nuffle/var/nuffle.log"
+
+# Technically, this is a security breach. Personally, I
+# find it useful when trying to debug or hunt down bugs.
+server.showTracebacks: True
+
+# The baseUrlFilter needs to be enabled when running CherryPy 
+# behind Apache. See http://www.cherrypy.org/wiki/BehindApache
+#baseUrlFilter.on: True
+
+# The session filter provides support for coach logins.
+# With this filter disabled logging in will not work.
+sessionFilter.on: True
+
+# How should static content be served?
+[/static]
+staticFilter.on: True
+staticFilter.dir: "/home/nuffle/static"

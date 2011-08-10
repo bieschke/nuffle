@@ -1,0 +1,99 @@
+
+body, form, #logo {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+body {
+  background: white;
+  min-width: 790px;
+}
+
+a {
+  color: #000066;
+  text-decoration: none;
+}
+a:hover { text-decoration: underline; }
+
+h2 {
+  margin: 0 0.2em 0.2em;
+  text-align: right;
+  color: #333366;
+  border-bottom: 1px solid #cccc66;
+}
+
+h2 .action {
+  font-size: medium;
+  font-weight: normal;
+}
+
+h3 {
+  margin: 0 0.5em 0.5em;
+  color: #666699;
+  border-bottom: 1px solid #dddddd;
+}
+
+p { margin: 0.5em; }
+ul { margin: 1.0em 2.0em; }
+table { width: 100%; text-align: left; }
+td, th { padding: 0.1em; }
+
+.action { color: #666600; }
+.standings thead, .games thead, .teams thead, .stats thead { display: none; }
+.shade { background-color: #f0f0f0; }
+.week, .rank, .record, .score, .value, .percent, .ratio { text-align: center; }
+
+#header {
+  background: #ccccff;
+  white-space: nowrap;
+}
+
+#logo {
+  font-variant: small-caps;
+  letter-spacing: 0.3em;
+  text-align: center;
+}
+#logo a {
+  color: #333366;
+  text-decoration: none;
+}
+
+#navbar {
+  border-bottom: 1px solid white;
+  border-top: 1px solid white;
+  text-align: center;
+}
+#navbar a {
+  color: #333300;
+  font-style: normal;
+}
+
+#main .section {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  padding-bottom: 0.5em;
+}
+
+#content {
+  border-left: 1px dashed #dfdfdf;
+  border-right: 1px dashed #dfdfdf;
+  vertical-align: top;
+  width: 50%;
+}
+#content .news-item {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  padding-bottom: 0.5em;
+}
+
+#league_status {
+  vertical-align: top;
+  width: 25%;
+}
+
+#my_status {
+  vertical-align: top;
+  width: 25%;
+}
+

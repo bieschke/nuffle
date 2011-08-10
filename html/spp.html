@@ -1,0 +1,7 @@
+<py-if="player.needSkills()">
+<font color="green"><py-eval="str(player.spp())"></font>
+</py-if><py-else><py-if="player.tooManySkills()">
+<font color="red"><py-eval="str(player.spp())"></font>
+</py-if><py-else>
+<py-eval="str(player.spp())">
+</py-else></py-else>

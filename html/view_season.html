@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
+
+<head>
+<title>Season <py-eval="season.name"></title>
+<py-include="html/header_simple.html">
+</head>
+
+<body>
+
+<py-include="html/top.html">
+
+<py-code="
+GAME_TEAMS = {}
+for aGameTeam in GameTeam.select():
+	if not GAME_TEAMS.has_key(aGameTeam.gameID):
+		GAME_TEAMS[aGameTeam.gameID] = []
+	GAME_TEAMS[aGameTeam.gameID].append(aGameTeam)
+">
+
+<h2><py-eval="season.name"> Teams</h2>
+
+<table>
+
+<tr>
+<th>Team</th>
+<th>Coach</th>
+<th>Race</th>
+</tr>
+
+<py-exec="i = None">
+<py-for="i, team in enumerate(season.teams)">
+
+<tr<py-if="i % 2"> class="shade"</py-if>>
+<td><a href="<py-eval="team.view()">"><py-eval="team.name"></a></td>
+<td><a href="<py-eval="team.coach.view()">"><py-eval="team.coach.realname or '<i>Unknown</i>'"></a></td>
+<td><a href="<py-eval="team.race.view()">"><py-eval="team.race.name"></a></td>
+</tr>
+
+</py-for>
+
+<py-if="i is None">
+
+<tr>
+<td colspan="3"><i>No Teams</i></td>
+</tr>
+
+</py-if>
+
+</table>
+
+<h2><py-eval="season.name"> Games</h2>
+
+<table>
+
+<py-exec="i = None">
+<py-for="i, gameOrBye in enumerate(season.gamesAndByes())">
+
+<py-if="gameOrBye.__class__ is Bye">
+<py-exec="bye = gameOrBye">
+
+<tr<py-if="i % 2"> class="shade"</py-if>>
+<td><py-eval="bye.date.strftime('%B %d, %Y')"></td>
+<td><a href="<py-eval="bye.team.view()">"><py-eval="bye.team.name"></a></td>
+<td colspan="2"><i>BYE</i></td>
+</tr>
+
+</py-if><py-else>
+<py-exec="game = gameOrBye">
+
+<tr<py-if="i % 2"> class="shade"</py-if>>
+<td><py-eval="game.date.strftime('%B %d, %Y')"></td>
+<td><a href="<py-eval="GAME_TEAMS[game.id][0].team.view()">"><py-eval="GAME_TEAMS[game.id][0].team.name"></a></td>
+<td><a href="<py-eval="GAME_TEAMS[game.id][1].team.view()">"><py-eval="GAME_TEAMS[game.id][1].team.name"></a></td>
+<td>
+<py-if="game.isDone()">
+<a class="action" href="<py-eval="game.view()">">[view]</a>
+</py-if>
+</td>
+</tr>
+
+</py-else>
+
+</py-for>
+
+<py-if="i is None">
+
+<tr>
+<td colspan="4"><i>No Games</i></td>
+</tr>
+
+</py-if>
+
+</table>
+
+<py-include="html/bottom.html">
+
+</body>
+
+</html>

@@ -1,0 +1,29 @@
+#!/bin/sh
+# Dump the Nuffle database into a backup directory.
+
+cd `dirname ${0}` || exit 1
+eval `python2.4 ./env || echo exit 1`
+
+: ${NUFFLE_DB_HOST:?"You must set the environment variable NUFFLE_DB_HOST to use this command."}
+: ${NUFFLE_DB_USER:?"You must set the environment variable NUFFLE_DB_USER to use this command."}
+: ${NUFFLE_DB_PASSWORD:?"You must set the environment variable NUFFLE_DB_PASSWORD to use this command."}
+: ${NUFFLE_DB_NAME:?"You must set the environment variable NUFFLE_DB_NAME to use this command."}
+
+if [ $# -ne 1 ]; then
+	echo "USAGE: ${0} <backupDir>"
+	exit 1
+fi
+BACKUP_DIR="${1}"
+if ! [ -d "${BACKUP_DIR}" ]; then
+	echo "${BACKUP_DIR} is not a directory"
+	exit 1
+fi
+
+TIMESTAMP=$(date -u +%Y%m%d%H%M)
+if [ -z "${TIMESTAMP}" ]; then
+	echo "Unable to determine timestamp"
+	exit 1
+fi
+
+mysqldump -h "${NUFFLE_DB_HOST}" -u "${NUFFLE_DB_USER}" "--password=${NUFFLE_DB_PASSWORD}" "${NUFFLE_DB_NAME}" | gzip > "${BACKUP_DIR}/nuffle.${TIMESTAMP}.sql.gz"
+exit $?

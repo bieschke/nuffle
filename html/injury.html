@@ -1,0 +1,9 @@
+<py-if="player.isDead()">
+<font color="red">DEAD</font>
+</py-if><py-else><py-if="player.isRetired">
+<font color="red">Retired</font>
+</py-if><py-else><py-if="player.isMNG()">
+<font color="red">MNG</font>
+</py-if><py-else>
+<py-eval="', '.join([gp.injury for gp in player.gamePlayers if gp.injury and gp.injury not in ['BH', 'MNG', 'DEAD']])">
+</py-else></py-else></py-else>

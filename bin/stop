@@ -1,0 +1,28 @@
+#!/bin/sh
+# Stop the Nuffle Blood Bowl Web Manager.
+
+cd `dirname ${0}` || exit 1
+eval `python2.4 ./env || echo exit 1`
+
+: ${NUFFLE_PIDFILE:?"You must set the environment variable NUFFLE_PIDFILE to use this command."}
+
+if [ -f "${NUFFLE_PIDFILE}" ]; then
+	PID="`cat ${NUFFLE_PIDFILE}`"
+	kill -0 "${PID}"
+	if [ $? -ne 0 ]; then
+		echo "nuffle not running: pid=${PID}"
+		exit 1
+	fi
+	kill -TERM "${PID}"
+	if [ $? -eq 0 ]; then
+		echo "nuffle stopped"
+		exit 0 # success
+	else
+		echo "nuffle stop failed"
+		exit 1
+	fi
+else
+	echo "nuffle pidfile missing: ${NUFFLE_PIDFILE}"
+	exit 1
+fi
+exit 1 # should never happen

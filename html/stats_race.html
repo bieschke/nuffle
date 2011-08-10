@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
+
+<head>
+<title>Race Stats</title>
+<py-include="html/header_simple.html">
+</head>
+
+<body>
+
+<py-include="html/top.html">
+
+<h2>Race Statistics</h2>
+
+<table>
+
+<tr>
+<th>Rank</th>
+<th>Race</th>
+<th>Win %</th>
+<th>Glicko</th>
+<th>Elo</th>
+<th>Teams</th>
+</tr>
+
+<py-code="
+results = list(sqlobjectConnection().queryAll(
+	'select r.id, '
+	'r.name, '
+	'count(distinct t.id), '
+	'sum(case when gt0.score > gt1.score then 1 else 0 end), '
+	'sum(case when gt0.score=gt1.score and (gt0.score>0 or gt1.score>0) then 1 else 0 end), '
+	'sum(case when gt0.score>0 or gt1.score>0 then 1 else 0 end) '
+	'from race r '
+	'left outer join team t '
+	'on r.id=t.race_id '
+	'left outer join game_team gt0 '
+	'on t.id=gt0.team_id '
+	'left outer join game_team gt1 '
+	'on gt0.game_id=gt1.game_id '
+	'and gt0.team_id != gt1.team_id '
+	'group by r.id, r.name'
+))
+race_glicko_ratings = race_glicko()
+race_elo_ratings = race_elo()
+results.sort(cmp_stats(3, 4, 5))
+results.sort(key=(lambda c : race_elo_ratings[c[0]]), reverse=True)
+results.sort(key=(lambda c : race_glicko_ratings[c[0]]), reverse=True)
+i = None
+">
+
+<py-for="i, (raceId, raceName, teamCount, winCount, tieCount, totalGames) in enumerate(results)">
+<py-code="
+teamCount = int(teamCount)
+winCount = int(winCount)
+tieCount = int(tieCount)
+totalGames = int(totalGames)
+r, rd, t0 = race_glicko_ratings.get(raceId, (glicko.start_r, glicko.start_rd, None))
+elo_r = race_elo_ratings.get(raceId, elo.start_r)
+">
+
+<tr<py-if="i % 2"> class="shade"</py-if>>
+<td><py-eval="str(i+1)"></td>
+<td><a href="/race/id/<py-eval="str(raceId)">"><py-eval="raceName"></a></td>
+<py-if="totalGames > 0">
+<td><py-eval="str(int(round(100.0 * (winCount + (tieCount * 0.5)) / totalGames)))">%</td>
+</py-if><py-else>
+<td>-</td>
+</py-else>
+<td><py-include="html/glicko.html"></td>
+<td><py-include="html/elo.html"></td>
+<td><py-eval="str(teamCount)"></td>
+</tr>
+
+</py-for>
+
+<py-if="i is None">
+
+<tr>
+<td colspan="6"><i>No Races</i></td>
+</tr>
+
+</py-if>
+
+</table>
+
+<py-include="html/bottom.html">
+
+</body>
+
+</html>

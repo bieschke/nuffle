@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
+
+<head>
+<title>Season Edit</title>
+<py-include="html/header_simple.html">
+</head>
+
+<body>
+
+<py-include="html/top.html">
+
+<py-exec="assert myCoach and myCoach.isAdmin(), 'You are not administrator!'">
+
+<h2>Season <py-eval="season.name"></h2>
+<p>
+<form action="<py-eval="season.edit ()">" method="post">
+Season Name: <input type="text" name="name" value="<py-eval="season.name">" />
+<input type="submit" value="Update" />
+</form>
+</p>
+
+<h2><py-eval="season.name"> Teams</h2>
+<p>
+<table>
+
+<tr>
+<th>Team</th>
+<th>Coach</th>
+<th>Race</th>
+<th></th>
+</tr>
+
+<py-if="season.teams">
+
+<py-for="i, team in enumerate(season.teams)">
+
+<tr<py-if="i % 2"> class="shade"</py-if>>
+<td><a href="<py-eval="team.view()">"><py-eval="team.name"></a></td>
+<td><a href="<py-eval="team.coach.view()">"><py-eval="team.coach.realname or '<i>Unknown</i>'"></a></td>
+<td><a href="<py-eval="team.race.view()">"><py-eval="team.race.name"></a></td>
+<td><a class="action" href="removeTeam?season=<py-eval="str(season.id)">&team=<py-eval="str(team.id)">">[remove]</a></td>
+</tr>
+
+</py-for>
+
+</py-if><py-else>
+
+<tr>
+<td colspan="4"><i>No Teams</i></td>
+</tr>
+
+</py-else>
+
+<tr>
+<form action="addTeam" method="post">
+<input type="hidden" name="season" value="<py-eval="str(season.id)">" />
+<td colspan="3">
+<select name="team">
+<py-for="team in Team.select()">
+<py-if="team not in season.teams">
+<option value="<py-eval="str(team.id)">"><py-eval="team.name or '<i>Unknown</i>'"></option>
+</py-if>
+</py-for>
+</select>
+</td>
+<td><input type="submit" value="Add Team" /></td>
+</form>
+</tr>
+
+</table>
+</p>
+
+<h2><py-eval="season.name"> Games</h2>
+<p>
+<table>
+
+<py-exec="i = None">
+<py-for="i, gameOrBye in enumerate(season.gamesAndByes())">
+
+<py-if="gameOrBye.__class__ is Bye">
+<py-exec="bye = gameOrBye">
+
+<tr<py-if="i % 2"> class="shade"</py-if>>
+<td><a href="<py-eval="bye.team.view()">"><py-eval="bye.team.name"></a></td>
+<td><i>BYE</i></td>
+<td><py-eval="bye.date.strftime('%B %d, %Y')"></td>
+<td></td>
+<td><a class="action" href="removeBye?season=<py-eval="str(season.id)">&bye=<py-eval="str(bye.id)">">[remove]</a></td>
+</tr>
+
+</py-if><py-else>
+<py-exec="game = gameOrBye">
+
+<tr<py-if="i % 2"> class="shade"</py-if>>
+<td><a href="<py-eval="game.gameTeams[0].team.view()">"><py-eval="game.gameTeams[0].team.name"></a></td>
+<td><a href="<py-eval="game.gameTeams[1].team.view()">"><py-eval="game.gameTeams[1].team.name"></a></td>
+<td><py-eval="game.date.strftime('%B %d, %Y')"></td>
+<td><a class="action" href="/game/edit?id=<py-eval="str(game.id)">">[edit]</a></td>
+<td><a class="action" href="removeGame?season=<py-eval="str(season.id)">&game=<py-eval="str(game.id)">">[remove]</a></td>
+</tr>
+
+</py-else>
+
+</py-for>
+
+<py-if="i is None">
+
+<tr>
+<td colspan="5"><i>No Games</i></td>
+</tr>
+
+</py-if>
+
+<tr>
+<form action="addGame" method="post">
+<input type="hidden" name="season" value="<py-eval="str(season.id)">" />
+<td>
+<select name="team1">
+<py-for="team in season.teams">
+<option value="<py-eval="str(team.id)">"><py-eval="team.name or '<i>Unknown</i>'"></option>
+</py-for>
+</select>
+</td>
+<td>
+<select name="team2">
+<option value="BYE">BYE</option>
+<py-for="team in season.teams">
+<option value="<py-eval="str(team.id)">"><py-eval="team.name or '<i>Unknown</i>'"></option>
+</py-for>
+</select>
+</td>
+
+<py-code="
+now = time.localtime()
+nowYear = now[0]
+nowMonth = now[1]
+nowDay = now[2]
+">
+<td>
+<select name="year">
+<py-for="year in xrange(nowYear-1, nowYear+2)">
+<option value=<py-eval="str(year)"><py-if="year == nowYear"> selected</py-if>><py-eval="str(year)"></option>
+</py-for>
+</select>
+<select name="month">
+<py-for="month in xrange(1, 13)">
+<option value=<py-eval="str(month)"><py-if="month == nowMonth"> selected</py-if>><py-eval="str(month)"></option>
+</py-for>
+</select>
+<select name="day">
+<py-for="day in xrange(1, 33)">
+<option value=<py-eval="str(day)"><py-if="day == nowDay"> selected</py-if>><py-eval="str(day)"></option>
+</py-for>
+</select>
+</td>
+
+<td colspan="2"><input type="submit" value="Add Game" /></td>
+</form>
+</tr>
+
+</table>
+</p>
+
+<py-include="html/bottom.html">
+
+</body>
+
+</html>

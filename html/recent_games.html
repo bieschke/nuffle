@@ -1,0 +1,53 @@
+
+<div id="recent_games" class="section">
+
+<h2>Recent Games</h2>
+    
+<table class="games" cellspacing="0">
+
+<thead>
+<tr>
+<th>Team</th>
+<th>Score</th>
+</tr>
+</thead>
+
+<tbody>
+
+<py-code="
+recentGames = Game.select(
+	AND(Game.q.seasonID == cfg.getint('nuffle', 'league.season'), 
+		IN(Game.q.id, sqlbuilder.Select(
+			GameTeam.q.gameID, where=GameTeam.q.score>0))),
+	orderBy='-date')[:7]
+
+i = None
+">
+<py-for="i, recentGame in enumerate(recentGames)">
+
+<tr<py-if="i % 2"> class="shade"</py-if>>
+<td><a href="<py-eval="TEAMS[GAME_TEAMS[recentGame.id][0].teamID].view()">"><py-eval="TEAMS[GAME_TEAMS[recentGame.id][0].teamID].name"></a></td>
+<td><py-eval="str(GAME_TEAMS[recentGame.id][0].score)"></td>
+</tr>
+
+<tr<py-if="i % 2"> class="shade"</py-if>>
+<td><a href="<py-eval="TEAMS[GAME_TEAMS[recentGame.id][1].teamID].view()">"><py-eval="TEAMS[GAME_TEAMS[recentGame.id][1].teamID].name"></a></td>
+<td><py-eval="str(GAME_TEAMS[recentGame.id][1].score)"></td>
+</tr>
+
+</py-for>
+
+<py-if="i is None">
+
+<tr>
+<td colspan="2"><i>No recent games</i></td>
+</tr>
+
+</py-if>
+
+</tbody>
+
+</table>
+      
+</div><!-- div#recent_games <py-eval="str(time.time())"> -->
+

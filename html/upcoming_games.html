@@ -1,0 +1,52 @@
+
+<div id="upcoming_games" class="section">
+
+<h2>Upcoming Games</h2>
+    
+<table class="games" cellspacing="0">
+
+<thead>
+<tr>
+<th>Home</th>
+<th></th>
+<th>Away</th>
+</tr>
+</thead>
+
+<tbody>
+
+<py-code="
+upcomingGames = Game.select(
+	AND(Game.q.seasonID == cfg.getint('nuffle', 'league.season'), 
+		sqlbuilder.NOTIN(Game.q.id, sqlbuilder.Select(
+			GameTeam.q.gameID, where=GameTeam.q.score>0))),
+	orderBy='date')[:7]
+
+i = None
+">
+<py-for="i, upcomingGame in enumerate(upcomingGames)">
+
+<tr<py-if="i % 2"> class="shade"</py-if>>
+
+<td><a href="<py-eval="TEAMS[GAME_TEAMS[upcomingGame.id][0].teamID].view()">"><py-eval="TEAMS[GAME_TEAMS[upcomingGame.id][0].teamID].name"></a></td>
+<td>vs</td>
+<td style="text-align:right"><a href="<py-eval="TEAMS[GAME_TEAMS[upcomingGame.id][1].teamID].view()">"><py-eval="TEAMS[GAME_TEAMS[upcomingGame.id][1].teamID].name"></a></td>
+
+</tr>
+
+</py-for>
+
+<py-if="i is None">
+
+<tr>
+<td colspan="3"><i>No upcoming games</i></td>
+</tr>
+
+</py-if>
+
+</tbody>
+
+</table>
+
+</div><!-- div#upcominggames <py-eval="str(time.time())"> -->
+

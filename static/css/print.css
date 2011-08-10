@@ -1,0 +1,30 @@
+
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+body {
+  background: white;
+}
+
+h3 {
+  color: #333333;
+  text-align: center;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+td {
+  border: 1px #cccccc solid;
+  padding: 2px;
+}
+
+.shade {
+  background-color: #f0f0f0;
+}
+

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
+
+<head>
+<title><py-eval="game.gameTeams[0].team.name"> vs. <py-eval="game.gameTeams[1].team.name"></title>
+<py-include="html/header_simple.html">
+</head>
+
+<body>
+
+<py-include="html/top.html">
+
+<h2><py-eval="game.gameTeams[0].team.name"> vs. <py-eval="game.gameTeams[1].team.name"></h2>
+
+<py-if="game.gameTeams[0].score != game.gameTeams[1].score">
+
+<p style="text-align:center">
+<font size=5>
+<py-eval="str(game.gameTeams[0].team.name)"> Win!
+</font>
+<br />
+<font size=7>
+<py-eval="str(game.gameTeams[0].score)">
+-
+<py-eval="str(game.gameTeams[1].score)">
+</font>
+</p>
+
+</py-if>
+
+<p>
+<table>
+
+<tr>
+<td>Season</td>
+<td><py-eval="game.season.name"></td>
+</tr>
+
+<tr>
+<td>Date</td>
+<td><py-eval="game.date.strftime('%B %d, %Y')"></td>
+</tr>
+
+<tr>
+<td>Overtime</td>
+<td><py-eval="game.overtime and 'Yes' or 'No'"></td>
+</tr>
+
+</table>
+</p>
+
+<py-if="game.description">
+<p>
+<py-eval="game.description">
+</p>
+</py-if>
+
+<py-for="gameTeam in game.gameTeams">
+
+<h2><py-eval="str(gameTeam.team.name)"></h2>
+
+<ul>
+<li>Winnings: <py-eval="gameTeam.winnings and gpFormat(gameTeam.winnings) or '? '"></li>
+<li>FF: <py-eval="str(gameTeam.ffChange)"></li>
+</ul>
+
+<p>
+<table>
+
+<tr>
+<th>#</th>
+<th>Player</th>
+<th>TD</th>
+<th>CAS</th>
+<th>COMP</th>
+<th>CAT</th>
+<th>INTER</th>
+<th>MVP</th>
+<th>Injury</th>
+</tr>
+
+<py-if="gameTeam.players">
+
+<py-for="i, gameTeamPlayer in enumerate(gameTeam.players)">
+
+<tr<py-if="i % 2"> class="shade"</py-if>>
+<td><py-eval="str(gameTeamPlayer.player.number) or '<i>?</i>'"></td>
+<td><py-eval="gameTeamPlayer.player.htmlName()"></td>
+<td><py-eval="str(gameTeamPlayer.td)"></td>
+<td><py-eval="str(gameTeamPlayer.cas)"></td>
+<td><py-eval="str(gameTeamPlayer.comp)"></td>
+<td><py-eval="str(gameTeamPlayer.cat)"></td>
+<td><py-eval="str(gameTeamPlayer.inter)"></td>
+<td><py-eval="str(gameTeamPlayer.mvp)"></td>
+<td><py-eval="str(gameTeamPlayer.injury)"></td>
+</tr>
+
+</py-for>
+
+</py-if><py-else>
+
+<tr><td colspan="9"><i>No game players</i></td></tr>
+
+</py-else>
+
+</table>
+</p>
+
+</py-for>
+
+<py-include="html/bottom.html">
+
+</body>
+
+</html>

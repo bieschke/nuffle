@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
+
+<head>
+<title>Coach Edit</title>
+<py-include="html/header_simple.html">
+</head>
+
+<body>
+
+<py-include="html/top.html">
+
+<py-exec="assert myCoach and (coach is myCoach or myCoach.isAdmin()), 'You may not edit this coach!'">
+
+<h2>Modify Coach <py-eval="coach.realname or '<i>Anonymous Somebody</i>'"></h2>
+<p>
+<table>
+<form action="<py-eval="coach.edit()">" method="post">
+
+<tr>
+<td>Username</td>
+<td><py-eval="coach.username"></td>
+</tr>
+
+<tr>
+<td>Password</td>
+<td><input type="password" name="password" value="<py-eval="coach.password">" /></td>
+</tr>
+
+<tr>
+<td>Password#2</td>
+<td><input type="password" name="password2" value="<py-eval="coach.password">" /></td>
+</tr>
+
+<tr>
+<td>Real Name</td>
+<td><input type="text" name="realname" value="<py-eval="coach.realname or ''">" /></td>
+</tr>
+
+<tr>
+<td>Email</td>
+<td><input type="text" name="email" value="<py-eval="coach.email or ''">" /></td>
+</tr>
+
+<tr>
+<td>Phone</td>
+<td><input type="text" name="phone" value="<py-eval="coach.phone or ''">" /></td>
+</tr>
+
+<py-if="myCoach.isAdmin()">
+
+<tr>
+<td>Role</td>
+<td>
+<select name="role">
+<py-for="role in ['USER', 'ADMIN']">
+<option value=<py-eval="str(role)"><py-if="coach.role == role"> selected</py-if>><py-eval="role"></option>
+</py-for>
+</select>
+</td>
+</tr>
+
+</py-if>
+
+<tr>
+<td colspan="2"><input type="submit" value="Update" /></td>
+</tr>
+
+</form>
+</table>
+</p>
+
+</body>
+
+<h2>Teams for <py-eval="coach.realname or '<i>Anonymous Somebody</i>'"></h2>
+<p>
+<table>
+
+<tr>
+<th>Team</th>
+<th>Race</th>
+<th colspan="2">&nbsp;</th>
+</tr>
+
+<py-for="i, team in enumerate(coach.teams)">
+
+<tr<py-if="i % 2"> class="shade"</py-if>>
+<td><a href="<py-eval="team.view()">"><py-eval="team.name"></a></td>
+<td><a href="<py-eval="team.race.view()">"><py-eval="team.race.name"></a></td>
+<td><a class="action" href="<py-eval="team.edit()">">[edit]</a></td>
+<py-if="not team.byes and not team.teamGames">
+<td><a class="action" href="/team/delete?id=<py-eval="str(team.id)">">[delete]</a></td>
+</py-if><py-else>
+<td></td>
+</py-else>
+</tr>
+
+</py-for>
+
+<tr>
+<form action="/team/create" method="post">
+<input type="hidden" name="INTcoachID" value="<py-eval="str (coach.id)">" />
+<td><input type="text" name="name"></td>
+<td>
+<select name="INTraceID">
+<py-for="race in Race.select ()">
+<option value="<py-eval="str (race.id)">"><py-eval="race.name"></option>
+</py-for>
+</select>
+</td>
+<td colspan="2"><input type="submit" value="Add Team" /></td>
+</form>
+</tr>
+
+<tr>
+</tr>
+
+</table>
+</p>
+
+<py-include="html/bottom.html">
+
+</html>

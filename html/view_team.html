@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
+
+<head>
+<title><py-eval="team.name"></title>
+<py-include="html/header_simple.html">
+</head>
+
+<body>
+
+<py-include="html/top.html">
+
+<h2>
+<a class="action" href="<py-eval="team.printPage()">">[print]</a>
+<py-eval="team.name">
+<py-for="medal in team.medals"><py-include="html/medal.html"></py-for>
+</h2>
+
+<table>
+<tr>
+<td>Race</td><td><a href="<py-eval="team.race.view()">"><py-eval="team.race.name"></a></td>
+<td>RR</td><td><py-eval="str(team.rr)"></td>
+</tr>
+<tr class="shade">
+<td>Coach</td><td><a href="<py-eval="team.coach.view()">"><py-eval="team.coach.realname or '<i>Unknown</i>'"></a></td>
+<td>FF</td><td><py-eval="str(team.ff)"></td>
+</tr>
+<tr>
+<td>TV</td><td><py-eval="gpFormat(team.value())"></td>
+<td>Assistant Coaches</td><td><py-eval="str(team.assistantCoaches)"></td>
+</tr>
+<tr class="shade">
+<td>Petty Cash</td><td><py-eval="gpFormat(team.treasury)"></td>
+<td>Cheerleaders</td><td><py-eval="str(team.cheerleaders)"></td>
+</tr>
+<tr>
+<td>Treasury</td><td><py-eval="gpFormat(team.bank)"></td>
+<td>Apothecary?</td><td><py-if="team.apothecary">Yes</py-if><py-else>No</py-else></td>
+</tr>
+</table>
+
+<h2>Active Players</h2>
+
+<table>
+
+<tr>
+<th>#</th>
+<th>Name</th>
+<th>Position</th>
+<th>MA</th>
+<th>ST</th>
+<th>AG</th>
+<th>AV</th>
+<th>Skills</th>
+<th>Injuries</th>
+<th>SPP</th>
+<th>Value</th>
+</tr>
+
+<py-exec="i = None">
+<py-for="i, player in enumerate(team.activePlayers())">
+
+<tr<py-if="i % 2"> class="shade"</py-if>>
+<td><py-eval="player.number and str(player.number) or '<i>?</i>'"></td>
+<td><py-eval="player.htmlName()"></td>
+<td><py-eval="player.position.name"></td>
+<td><py-eval="str(player.MA())"></td>
+<td><py-eval="str(player.ST())"></td>
+<td><py-eval="str(player.AG())"></td>
+<td><py-eval="str(player.AV())"></td>
+<td><py-eval="', '.join([skill.name for skill in player.skills])"></td>
+<td><py-include="html/injury.html"></td>
+<td>
+<py-include="html/spp.html">
+</td>
+<td><py-eval="gpFormat(player.value())"></td>
+</tr>
+
+</py-for>
+
+<py-if="i is None">
+
+<tr>
+<td colspan="11"><i>No Players</i></td>
+</tr>
+
+</py-if>
+
+</table>
+
+<h2>Games</h2>
+
+<table>
+
+<tr>
+<th>Date</th>
+<th>Opponent</th>
+<th>Score</th>
+<th>Result</th>
+<th></th>
+</tr>
+
+<py-code="
+myTeamGames = team.teamGames[:]
+def game_date(teamGame):
+	return teamGame.game.date
+myTeamGames.sort(key=game_date, reverse=True)
+i = None
+">
+<py-for="i, teamGame in enumerate([mtg for mtg in myTeamGames if mtg.game.isDone()])">
+<py-code="
+ourScore = teamGame.score
+for gameTeam in teamGame.game.gameTeams:
+	if gameTeam is not teamGame:
+		opponent = gameTeam.team
+		opponentScore = gameTeam.score
+		break
+if ourScore > opponentScore:
+	gameResult = '<font color=green>WIN</font>'
+elif opponentScore > ourScore:
+	gameResult = '<font color=red>LOSS</font>'
+else:
+	gameResult = 'TIE'
+">
+
+<tr<py-if="i%2"> class="shade"</py-if>>
+<td><py-eval="teamGame.game.date.strftime('%B %d, %Y')"></td>
+<td><a href="<py-eval="opponent.view()">"><py-eval="opponent.name"></a></td>
+<td><py-eval="str(ourScore)">-<py-eval="str(opponentScore)"></td>
+<td><py-eval="gameResult"></td>
+<td><a class="action" href="<py-eval="teamGame.game.view()">">[view]</a></td>
+</tr>
+
+</py-for>
+
+<py-if="i is None">
+
+<tr>
+<td colspan="6"><i>No Games</i></td>
+</tr>
+
+</py-if>
+
+</table>
+
+<py-include="html/bottom.html">
+
+</body>
+
+</html>

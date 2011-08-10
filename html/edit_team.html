@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
+
+<head>
+<title>Team Edit</title>
+<py-include="html/header_simple.html">
+</head>
+
+<body>
+
+<py-include="html/top.html">
+
+<py-exec="assert myCoach and (team.coach is myCoach or myCoach.isAdmin()), 'You may not edit this team!'">
+
+<h2>Team <py-eval="team.name"></h2>
+
+<table>
+
+<py-if="changeName">
+<form action="<py-eval="team.edit()">" method="post">
+<tr><td>Team Name</td><td><input type="text" name="name" value="<py-eval="team.name">" /></td><td colspan="2"><input type="submit" value="Change Name" /></td></tr>
+</form>
+</py-if><py-else>
+<tr><td>Team Name</td><td><py-eval="team.name"></td><td colspan="2"><a class="action" href="<py-eval="team.edit()">&changeName=t">[edit]</a></td></tr>
+</py-else>
+
+<tr class="shade"><td>Race</td><td><py-eval="team.race.name"></td><td colspan="2"></td></tr>
+
+<tr><td>Coach</td><td><py-eval="team.coach.realname or '<i>Unknown</i>'"></td><td colspan="2"></td></tr>
+
+<tr class="shade"><td>TV</td><td><py-eval="gpFormat(team.value())"></td><td colspan="2"></td></tr>
+
+<tr><td>Petty Cash</td><td><py-eval="gpFormat(team.treasury)"></td><td colspan="2"><py-if="myCoach.isAdmin()"><a class="action" href="<py-eval="team.edit()">&INTtreasury=<py-eval="str(team.treasury-10000)">">[-]</a><a class="action" href="<py-eval="team.edit()">&INTtreasury=<py-eval="str(team.treasury+10000)">">[+]</a></py-if></td></tr>
+
+<tr class="shade">
+<td>Treasury</td>
+<td><py-eval="gpFormat(team.bank)"></td>
+<td><py-if="team.bank > 0"><a class="action" href="bankTransfer?id=<py-eval="str(team.id)">&amount=-<py-eval="str(team.bank)">">[empty]</a><a class="action" href="bankTransfer?id=<py-eval="str(team.id)">&amount=-10000">[-]</a></py-if></td>
+<td><py-if="team.treasury > 0 and not team.isNew()"><a class="action" href="bankTransfer?id=<py-eval="str(team.id)">&amount=<py-eval="str(team.treasury)">">[max]</a><a class="action" href="bankTransfer?id=<py-eval="str(team.id)">&amount=10000">[+]</a></py-if></td>
+</tr>
+
+<tr>
+<td>RR</td>
+<td><py-eval="str(team.rr)"> @ <py-eval="gpFormat(team.race.rrCost)"></td>
+<td><py-if="team.rr > 0"><py-if="team.isNew()"><a class="action" href="sellRR?id=<py-eval="str(team.id)">">[sell]</a></py-if><py-else><a class="action" href="<py-eval="team.edit()">&INTrr=<py-eval="str(team.rr-1)">">[retire]</a></py-else></py-if></td>
+<td>
+<py-if="team.treasury >= team.race.rrCost">
+<a class="action" href="buyRR?id=<py-eval="str(team.id)">">[buy]</a>
+</py-if>
+</td>
+</tr>
+
+<tr class="shade">
+<td>FF</td>
+<td><py-eval="str(team.ff)"></td>
+<td><py-if="team.ff > 0 and team.isNew()"><a class="action" href="sellFF?id=<py-eval="str(team.id)">">[sell]</a></py-if></td>
+<td>
+<py-if="team.treasury >= 10000">
+<a class="action" href="buyFF?id=<py-eval="str(team.id)">">[buy]</a>
+</py-if>
+</td>
+</tr>
+
+<tr>
+<td>Assistant Coaches</td>
+<td><py-eval="str(team.assistantCoaches)"></td>
+<td><py-if="team.assistantCoaches > 0"><py-if="team.isNew()"><a class="action" href="sellAssistantCoach?id=<py-eval="str(team.id)">">[sell]</a></py-if><py-else><a class="action" href="<py-eval="team.edit()">&INTassistantCoaches=<py-eval="str(team.assistantCoaches-1)">">[retire]</a></py-else></py-if></td>
+<td>
+<py-if="team.treasury >= 10000">
+<a class="action" href="buyAssistantCoach?id=<py-eval="str(team.id)">">[buy]</a>
+</py-if>
+</td>
+</tr>
+
+<tr class="shade">
+<td>Cheerleaders</td>
+<td><py-eval="str(team.cheerleaders)"></td>
+<td><py-if="team.cheerleaders > 0"><py-if="team.isNew()"><a class="action" href="sellCheerleader?id=<py-eval="str(team.id)">">[sell]</a></py-if><py-else><a class="action" href="<py-eval="team.edit()">&INTcheerleaders=<py-eval="str(team.cheerleaders-1)">">[retire]</a></py-else></py-if></td>
+<td>
+<py-if="team.treasury >= 10000">
+<a class="action" href="buyCheerleader?id=<py-eval="str(team.id)">">[buy]</a>
+</py-if>
+</td>
+</tr>
+
+<tr>
+<td>Apothecary?</td>
+<td><py-if="team.apothecary">Yes</py-if><py-else>No</py-else></td>
+<td><py-if="team.apothecary"><py-if="team.isNew()"><a class="action" href="sellApothecary?id=<py-eval="str(team.id)">">[sell]</a></py-if><py-else><a class="action" href="<py-eval="team.edit()">&INTapothecary=0">[retire]</a></py-else></py-if></td>
+<td>
+<py-if="team.treasury >= 50000 and not team.apothecary">
+<a class="action" href="buyApothecary?id=<py-eval="str(team.id)">">[buy]</a>
+</py-if>
+</td>
+</tr>
+
+</table>
+
+<h2>All Players</h2>
+
+<table>
+
+<tr>
+<th>#</th>
+<th>Name</th>
+<th>Position</th>
+<th>MA</th>
+<th>ST</th>
+<th>AG</th>
+<th>AV</th>
+<th>Skills</th>
+<th>Injuries</th>
+<th>SPP</th>
+<th>Value</th>
+<th colspan="2"></th>
+</tr>
+
+<py-exec="teamPlayers = [p for p in team.players if not p.isJourneyman or not p.isRetired]">
+<py-if="teamPlayers">
+<py-exec="teamPlayers.sort(key = lambda x : (x.isDead(), x.isRetired, x.number))">
+
+<py-for="i, player in enumerate(teamPlayers)">
+
+<tr<py-if="i % 2"> class="shade"</py-if>>
+
+<py-if="editPlayer is player">
+
+<form action="<py-eval="player.edit()">" method="post">
+<td><input type="text" name="INTnumber" size="2" value="<py-eval="player.number and str(player.number) or ''">" /></td>
+<td><input type="text" name="name" value="<py-eval="player.name or ''">" /></td>
+<td><py-eval="player.position.name"></td>
+<td><py-eval="str(player.MA())"></td>
+<td><py-eval="str(player.ST())"></td>
+<td><py-eval="str(player.AG())"></td>
+<td><py-eval="str(player.AV())"></td>
+<td>
+<py-if="player.skills">
+<py-eval="', '.join([skill.name for skill in player.skills])">
+<br />
+</py-if>
+<select name="skill">
+<option value=""></option>
+<py-for="skill in [s for s in Skill.select() if player.eligibleSkill(s)]">
+<py-if="skill.category in normalAccess(player.position)+[SkillCategory.byName('Stat Increase')]">
+<option value="<py-eval="str(skill.id)">"><py-eval="skill.name"></option>
+</py-if>
+<py-if="skill.category in doubleAccess(player.position)">
+<option value="<py-eval="str(skill.id)">"><py-eval="skill.name"> (Doubles)</option>
+</py-if>
+</py-for>
+</select>
+</td>
+<td><py-include="html/injury.html"></td>
+<td>
+<py-include="html/spp.html">
+</td>
+<td><py-eval="gpFormat(player.value())"></td>
+<td colspan="2"><input type="submit" value="Update" /></td>
+</form>
+
+</py-if><py-else>
+
+<td><py-eval="player.number and str(player.number) or '<i>?</i>'"></td>
+<td><py-eval="player.htmlName()"></td>
+<td><py-eval="player.position.name"></td>
+<td><py-eval="str(player.MA())"></td>
+<td><py-eval="str(player.ST())"></td>
+<td><py-eval="str(player.AG())"></td>
+<td><py-eval="str(player.AV())"></td>
+<td><py-eval="', '.join([skill.name for skill in player.skills])"></td>
+<td><py-include="html/injury.html"></td>
+<td>
+<py-if="player.needSkills()">
+<font color="green"><py-eval="str(player.spp())"></font>
+</py-if><py-else><py-if="player.tooManySkills()">
+<font color="red"><py-eval="str(player.spp())"></font>
+</py-if><py-else>
+<py-eval="str(player.spp())">
+</py-else></py-else>
+</td>
+<td><py-eval="gpFormat(player.value())"></td>
+<td>
+<py-if="player.isActive()">
+<py-if="player.isJourneyman or player.gamePlayers">
+<a class="action" href="retirePlayer?id=<py-eval="str(player.id)">">[retire]</a>
+</py-if><py-else>
+<a class="action" href="sellPlayer?id=<py-eval="str(player.id)">">[sell]</a>
+</py-else>
+</py-if>
+</td>
+<td>
+<py-if="not player.isDead()">
+<py-if="player.isJourneyman">
+<py-if="team.treasury >= player.position.cost and player.gamePlayers and len(team.activePlayers()) < 16">
+<a class="action" href="buyJourneyman?id=<py-eval="str(player.id)">">[buy]</a>
+</py-if>
+</py-if><py-else>
+<a class="action" href="<py-eval="player.edit()">">[edit]</a>
+</py-else>
+</py-if>
+</td>
+
+</py-else>
+
+</tr>
+
+</py-for>
+
+</py-if><py-else>
+
+<tr>
+<td colspan="13"><i>No Players</i></td>
+</tr>
+
+</py-else>
+
+</table>
+
+<h2>Available Players</h2>
+
+<table>
+
+<tr>
+<th>Position</th>
+<th>MA</th>
+<th>ST</th>
+<th>AG</th>
+<th>AV</th>
+<th>Skills</th>
+<th>Cost</th>
+<th colspan="2"></th>
+</tr>
+
+<py-if="team.availablePositions()">
+
+<py-for="i, position in enumerate(team.availablePositions())">
+
+<tr<py-if="i % 2"> class="shade"</py-if>>
+<td><py-eval="position.name"></td>
+<td><py-eval="str(position.ma)"></td>
+<td><py-eval="str(position.st)"></td>
+<td><py-eval="str(position.ag)"></td>
+<td><py-eval="str(position.av)"></td>
+<td><py-eval="', '.join([skill.name for skill in positionSkills(position)])"></td>
+<td><py-eval="str(position.cost)"></td>
+<td>
+<py-if="position.max >= 16 and team.needsJourneymen()">
+<a class="action" href="freebootJourneyman?INTteamID=<py-eval="str(team.id)">&INTpositionID=<py-eval="str(position.id)">&INTnumber=<py-eval="str(max([0]+[p.number for p in team.activePlayers()])+1)">">[journeyman]</a>
+</py-if>
+</td>
+<td>
+<py-if="team.treasury >= position.cost">
+<a class="action" href="buyPlayer?INTteamID=<py-eval="str(team.id)">&INTpositionID=<py-eval="str(position.id)">&INTnumber=<py-eval="str(max([0]+[p.number for p in team.activePlayers()])+1)">">[buy]</a>
+</py-if>
+</td>
+</tr>
+
+</py-for>
+
+</py-if><py-else>
+
+<tr>
+<td colspan="9"><i>No available players</i></td>
+</tr>
+
+</py-else>
+
+</table>
+
+<py-include="html/bottom.html">
+
+</body>
+
+</html>

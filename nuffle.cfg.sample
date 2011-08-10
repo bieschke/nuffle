@@ -1,0 +1,26 @@
+[nuffle]
+
+# What's the name of your Blood Bowl league?
+league.name: My Blood Bowl League
+
+# What's the season ID of the current season?
+league.season: 1
+
+# What's the database info for the backing database?
+db.user: nuffle
+db.password: nuffle
+db.host: localhost
+db.name: nuffle
+db.uri: mysql://%(db.user)s:%(db.password)s@%(db.host)s/%(db.name)s?debug=1
+
+# Where are notable Nuffle directories?
+dir.root: /home/nuffle
+dir.html: %(dir.root)s/static/html
+dir.lib.python: %(dir.root)s/lib/python
+dir.var: %(dir.root)s/var
+
+# Where are notable Nuffle files?
+pidfile: %(dir.var)s/nuffle.pid
+html.front: %(dir.html)s/front.html
+html.league: %(dir.html)s/league.html
+

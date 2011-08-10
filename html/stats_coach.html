@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
+
+<head>
+<title>Coach Stats</title>
+<py-include="html/header_simple.html">
+</head>
+
+<body>
+
+<py-include="html/top.html">
+
+<h2>Coach Statistics</h2>
+
+<table>
+
+<tr>
+<th>Rank</th>
+<th>Coach</th>
+<th>Win %</th>
+<th>Glicko</th>
+<th>Elo</th>
+<th>Games</th>
+</tr>
+
+<py-code="
+results = list(sqlobjectConnection().queryAll(
+	'select c.id, '
+	'c.realname, '
+	'sum(case when gt0.score > gt1.score then 1 else 0 end), '
+	'sum(case when gt0.score=gt1.score and (gt0.score>0 or gt1.score>0) then 1 else 0 end), '
+	'sum(case when gt0.score>0 or gt1.score>0 then 1 else 0 end) '
+	'from coach c '
+	'join team t '
+	'on c.id=t.coach_id '
+	'join game_team gt0 '
+	'on t.id=gt0.team_id '
+	'join game_team gt1 '
+	'on gt0.game_id=gt1.game_id '
+	'and gt0.team_id != gt1.team_id '
+	'group by c.id, c.realname'
+))
+coach_glicko_ratings = coach_glicko()
+coach_elo_ratings = coach_elo()
+results.sort(cmp_stats(2, 3, 4))
+results.sort(key=(lambda c : coach_elo_ratings[c[0]]), reverse=True)
+results.sort(key=(lambda c : coach_glicko_ratings[c[0]]), reverse=True)
+i = None
+">
+
+<py-for="i, (coachId, coachName, winCount, tieCount, totalGames) in enumerate(results)">
+<py-code="
+winCount = int(winCount)
+tieCount = int(tieCount)
+totalGames = int(totalGames)
+r, rd, t0 = coach_glicko_ratings.get(coachId, (glicko.start_r, glicko.start_rd, None))
+elo_r = coach_elo_ratings.get(coachId, elo.start_r)
+">
+
+<tr<py-if="i % 2"> class="shade"</py-if>>
+<td><py-eval="str(i+1)"></td>
+<td><a href="/coach/id/<py-eval="str(coachId)">"><py-eval="coachName or '<i>Unknown</i>'"></a></td>
+<py-if="totalGames > 0">
+<td><py-eval="str(int(round(100.0 * (winCount + (tieCount * 0.5)) / totalGames)))">%</td>
+</py-if><py-else>
+<td>-</td>
+</py-else>
+<td><py-include="html/glicko.html"></td>
+<td><py-include="html/elo.html"></td>
+<td><py-eval="str(totalGames)"></td>
+</tr>
+
+</py-for>
+
+<py-if="i is None">
+
+<tr>
+<td colspan="6"><i>No Coaches</i></td>
+</tr>
+
+</py-if>
+
+</table>
+
+<py-include="html/bottom.html">
+
+</body>
+
+</html>

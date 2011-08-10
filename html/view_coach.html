@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
+
+<head>
+<py-include="html/header_simple.html">
+</head>
+
+<body>
+
+<py-include="html/top.html">
+
+<h2><py-eval="coach.realname or '<i>Unknown Somebody</i>'"></h2>
+<p>
+<table>
+<tr><td>Username</td><td><py-eval="coach.username"></td></tr>
+<tr class="shade"><td>Real Name</td><td><py-eval="coach.realname or '<b>Unknown</b>'"></td></tr>
+<py-if="myCoach">
+<tr><td>Email</td><td><py-eval="coach.email or '<b>Unknown</b>'"></td></tr>
+<tr class="shade"><td>Phone #</td><td><py-eval="coach.phone or '<b>Unknown</b>'"></td></tr>
+</py-if>
+</table
+</p>
+
+<h2>Teams</h2>
+<p>
+<table>
+
+<tr>
+<th>Team</th>
+<th>Race</th>
+</tr>
+
+<py-exec="coachTeams = [ct for ct in coach.teams if not ct.isNew()]">
+
+<py-if="coachTeams">
+
+<py-for="i, team in enumerate(coachTeams)">
+
+<tr<py-if="i % 2"> class="shade"</py-if>>
+<td><a href="<py-eval="team.view()">"><py-eval="team.name"></a></td>
+<td><a href="<py-eval="team.race.view()">"><py-eval="team.race.name"></a></td>
+</tr>
+
+</py-for>
+
+</py-if><py-else>
+
+<tr>
+<td colspan="2"><i>No Teams</i></td>
+</tr>
+
+</py-else>
+
+</table>
+</p>
+
+<h2>Games</h2>
+
+<p>
+<table>
+
+<tr>
+<th>Date</th>
+<th>Opponent</th>
+<th>Score</th>
+<th>Result</th>
+<th></th>
+</tr>
+
+<py-code="
+games = sqlobjectConnection().queryAll('select g.id, gt.team_id from game g join game_team gt on g.id=gt.game_id join team t on gt.team_id=t.id and t.coach_id=%d order by g.date desc' % coach.id)
+i = None
+">
+<py-for="i, (gameId, teamId) in enumerate(games)">
+<py-code="
+game = Game.get(gameId)
+team = Team.get(teamId)
+for gameTeam in game.gameTeams:
+	if gameTeam.team is team:
+		ourScore = gameTeam.score
+	else:
+		opponent = gameTeam.team
+		opponentScore = gameTeam.score
+if ourScore > opponentScore:
+	gameResult = '<font color=green>WIN</font>'
+elif opponentScore > ourScore:
+	gameResult = '<font color=red>LOSS</font>'
+else:
+	gameResult = 'TIE'
+">
+
+<tr<py-if="i%2"> class="shade"</py-if>>
+<td><py-eval="game.date.strftime('%B %d, %Y')"></td>
+<td><a href="<py-eval="opponent.view()">"><py-eval="opponent.name"></a></td>
+<td><py-eval="str(ourScore)">-<py-eval="str(opponentScore)"></td>
+<td><py-eval="gameResult"></td>
+<td><a class="action" href="<py-eval="game.view()">">[view]</a></td>
+</tr>
+
+</py-for>
+
+<py-if="i is None">
+
+<tr>
+<td colspan="6"><i>No Games</i></td>
+</tr>
+
+</py-if>
+
+</table>
+</p>
+
+<py-include="html/bottom.html">
+
+</body>
+
+</html>
+

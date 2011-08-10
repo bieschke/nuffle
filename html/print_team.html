@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
+
+<head>
+<title><py-eval="team.name"></title>
+<py-include="html/header_print.html">
+</head>
+
+<body>
+
+<h3><py-eval="team.name"></h3>
+
+<table>
+<tr>
+<td>Race: <py-eval="team.race.name"></td>
+<td>Coach: <py-eval="team.coach.realname or '<i>Unknown</i>'"></td>
+<td>TV: <py-eval="gpFormat(team.value())"></td>
+<td>Petty Cash: <py-eval="gpFormat(team.treasury)"></td>
+<td>Treasury: <py-eval="gpFormat(team.bank)"></td>
+</tr>
+<tr>
+<td><py-eval="str(team.rr)">RR</td>
+<td><py-eval="str(team.ff)">FF</td>
+<td><py-eval="str(team.assistantCoaches)"> Coaches</td>
+<td><py-eval="str(team.cheerleaders)"> Cheerleaders</td>
+<td>Apothecary? <py-if="team.apothecary">Yes</py-if><py-else>No</py-else></td>
+</tr>
+</table>
+
+<table>
+
+<tr>
+<th>#</th>
+<th>Name</th>
+<th>Position</th>
+<th>MA</th>
+<th>ST</th>
+<th>AG</th>
+<th>AV</th>
+<th>Skills</th>
+<th>Injuries</th>
+<th>&nbsp;TD&nbsp;</th>
+<th>CAS</th>
+<th>COM</th>
+<th>CAT</th>
+<th>INT</th>
+<th>MVP</th>
+<th>SPP</th>
+<th>Value</th>
+</tr>
+
+<py-exec="i = None">
+<py-for="i, player in enumerate(team.activePlayers())">
+
+<tr<py-if="i % 2"> class="shade"</py-if>>
+<td><py-eval="player.number and str(player.number) or '<i>?</i>'"></td>
+<td><py-eval="player.htmlName()"></td>
+<td><py-eval="player.position.name"></td>
+<td><py-eval="str(player.MA())"></td>
+<td><py-eval="str(player.ST())"></td>
+<td><py-eval="str(player.AG())"></td>
+<td><py-eval="str(player.AV())"></td>
+<td><py-eval="', '.join([skill.name for skill in player.skills])"></td>
+<td><py-include="html/injury.html"></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>
+<py-include="html/spp.html">
+</td>
+<td><py-eval="gpFormat(player.value())"></td>
+</tr>
+
+</py-for>
+
+<py-if="i is None">
+
+<tr>
+<td colspan="17"><i>No Players</i></td>
+</tr>
+
+</py-if>
+
+</table>
+
+</body>
+
+</html>
+

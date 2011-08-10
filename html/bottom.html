@@ -1,0 +1,175 @@
+
+</td><!-- td#content -->
+
+<td id="my_status">
+
+<div id="my_stats" class="section">
+<h2>My Stats</h2>
+<table class="stats" cellspacing="0">
+
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Ratio</th>
+<th>%</th>
+</tr>
+</thead>
+
+<tbody>
+
+<py-if="myCoach">
+
+<py-code="
+
+winFor, tieCount, winAgainst = map(int, sqlobjectConnection().queryOne('select coalesce(sum(case when gt0.score > gt1.score then 1 else 0 end),0), coalesce(sum(case when gt0.score=gt1.score then 1 else 0 end),0), coalesce(sum(case when gt1.score > gt0.score then 1 else 0 end),0) from team t join game_team gt0 on t.id=gt0.team_id join game_team gt1 on gt0.game_id=gt1.game_id and gt0.team_id!=gt1.team_id where t.coach_id=%d' % myCoach.id))
+totalGames = winFor + tieCount + winAgainst
+
+tdFor, casFor, compFor, catFor, interFor = map(int, sqlobjectConnection().queryOne('select coalesce(sum(gtp.td),0), coalesce(sum(gtp.cas),0), coalesce(sum(gtp.comp),0), coalesce(sum(gtp.cat),0), coalesce(sum(gtp.inter),0) from game_team_player gtp join game_team gt on gtp.game_team_id=gt.id join team t on gt.team_id=t.id where t.coach_id=%d' % myCoach.id))
+
+tdAgainst, casAgainst, compAgainst, catAgainst, interAgainst = map(int, sqlobjectConnection().queryOne('select coalesce(sum(gtp.td),0), coalesce(sum(gtp.cas),0), coalesce(sum(gtp.comp),0), coalesce(sum(gtp.cat),0), coalesce(sum(gtp.inter),0) from game_team_player gtp join game_team gt0 on gtp.game_team_id=gt0.id join game_team gt1 on gt0.game_id=gt1.game_id and gt0.team_id != gt1.team_id where gt1.team_id in (select t.id from team t where t.coach_id=%d)' % myCoach.id))
+">
+
+<tr>
+<th class="stat">W-L-T</th>
+<td class="value" nowrap="nowrap"><py-eval="str(winFor)">-<py-eval="str(winAgainst)">-<py-eval="str(tieCount)"></td>
+<td class="ratio"><py-if="totalGames != 0"><py-eval="'%.2f' % ((winFor+(tieCount*0.5))/totalGames)"></py-if><py-else>-</py-else></td>
+<td class="percent"><py-if="(winFor+winAgainst) != 0"><py-eval="'%d' % round((100.0*(winFor+(tieCount*0.5)))/totalGames)">%</py-if><py-else>-</py-else></td>
+</tr>
+
+<tr class="shade">
+<th class="stat">TD</th>
+<td class="value" nowrap="nowrap"><py-eval="str(tdFor)">-<py-eval="str(tdAgainst)"></td>
+<td class="ratio"><py-if="totalGames != 0"><py-eval="'%.2f' % (float(tdFor)/totalGames)"></py-if><py-else>-</py-else></td>
+<td class="percent"><py-if="(tdFor+tdAgainst) != 0"><py-eval="'%d' % round((100.0*tdFor)/(tdFor+tdAgainst))">%</py-if><py-else>-</py-else></td>
+</tr>
+
+<tr>
+<th class="stat">Cas</th>
+<td class="value" nowrap="nowrap"><py-eval="str(casFor)">-<py-eval="str(casAgainst)"></td>
+<td class="ratio"><py-if="totalGames != 0"><py-eval="'%.2f' % (float(casFor)/totalGames)"></py-if><py-else>-</py-else></td>
+<td class="percent"><py-if="(casFor+casAgainst) != 0"><py-eval="'%d' % round((100.0*casFor)/(casFor+casAgainst))">%</py-if><py-else>-</py-else></td>
+</tr>
+
+<tr class="shade">
+<th class="stat">Comp</th>
+<td class="value" nowrap="nowrap"><py-eval="str(compFor)">-<py-eval="str(compAgainst)"></td>
+<td class="ratio"><py-if="totalGames != 0"><py-eval="'%.2f' % (float(compFor)/totalGames)"></py-if><py-else>-</py-else></td>
+<td class="percent"><py-if="(compFor+compAgainst) != 0"><py-eval="'%d' % round((100.0*compFor)/(compFor+compAgainst))">%</py-if><py-else>-</py-else></td>
+</tr>
+
+<tr>
+<th class="stat">Cat</th>
+<td class="value" nowrap="nowrap"><py-eval="str(catFor)">-<py-eval="str(catAgainst)"></td>
+<td class="ratio"><py-if="totalGames != 0"><py-eval="'%.2f' % (float(catFor)/totalGames)"></py-if><py-else>-</py-else></td>
+<td class="percent"><py-if="(catFor+catAgainst) != 0"><py-eval="'%d' % round((100.0*catFor)/(catFor+catAgainst))">%</py-if><py-else>-</py-else></td>
+</tr>
+
+<tr class="shade">
+<th class="stat">Int</th>
+<td class="value" nowrap="nowrap"><py-eval="str(interFor)">-<py-eval="str(interAgainst)"></td>
+<td class="ratio"><py-if="totalGames != 0"><py-eval="'%.2f' % (float(interFor)/totalGames)"></py-if><py-else>-</py-else></td>
+<td class="percent"><py-if="(interFor+interAgainst) != 0"><py-eval="'%d' % round((100.0*interFor)/(interFor+interAgainst))">%</py-if><py-else>-</py-else></td>
+</tr>
+
+</py-if><py-else>
+
+<tr><td colspan="4"><i>You have no statistics</i></td></tr>
+
+</py-else>
+
+</tbody>
+</table>
+
+</div><!-- div#my_stats <py-eval="str(time.time())"> -->
+
+<div id="my_games" class="section">
+
+<h2>My Games</h2>
+<table class="games" cellspacing="0">
+
+<thead>
+<tr>
+<th>Team</th>
+<th></th>
+</tr>
+</thead>
+
+<tbody>
+
+<py-code="
+myGames = []
+if myCoach:
+	myGames = sqlobjectConnection().queryAll('select g.id, g.date, gt1.team_id from game g join game_team gt0 on g.id=gt0.game_id join team t on gt0.team_id=t.id and t.coach_id=%d join game_team gt1 on gt0.game_id=gt1.game_id and gt0.id!= gt1.id order by g.date' % myCoach.id)
+">
+
+<py-if="myGames">
+
+<py-for="i, (gameId, teamId) in enumerate([(g[0], g[2]) for g in myGames if abs(g[1] - datetime.datetime.now()) < datetime.timedelta(30)])">
+<tr class="<py-if="i % 2">shade</py-if>">
+<td>vs. <a href="/team/id/<py-eval="str(teamId)">"><py-eval="Team.get(teamId).name"></a></td>
+<td><a class="action" href="/game/edit?id=<py-eval="str(gameId)">">[edit]</a></td>
+</tr>
+</py-for>
+
+</py-if><py-else>
+
+<tr>
+<td colspan="2"><i>You have no games</i></td>
+</tr>
+
+</py-else>
+
+</tbody>
+
+</table>
+
+</div><!-- div#my_games <py-eval="str(time.time())"> -->
+
+<div id="my_teams" class="section">
+
+<h2>My Teams</h2>
+
+<table class="teams" cellspacing="0">
+
+<thead>
+<tr>
+<th>Team</th>
+<th></th>
+</tr>
+</thead>
+
+<tbody>
+
+<py-exec="i = None">
+<py-if="myCoach">
+
+<py-for="i, myTeam in enumerate(myCoach.teams)">
+<tr<py-if="i % 2"> class="shade"</py-if>>
+<td><a href="<py-eval="myTeam.view()">"><py-eval="myTeam.name"></a></td>
+<td><a class="action" href="<py-eval="myTeam.edit()">">[edit]</a></td>
+</tr>
+</py-for>
+
+</py-if>
+
+<py-if="i is None">
+
+<tr>
+<td colspan="2"><i>You have no teams</i></td>
+</tr>
+
+</py-if>
+
+</tbody>
+
+</table>
+
+</div><!-- div#my_teams <py-eval="str(time.time())"> -->
+
+</td><!-- td#my_status -->
+
+</tr>
+
+</table><!-- table#main -->
+

@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
+
+<head>
+<title><py-eval="game.gameTeams[0].team.name"> vs. <py-eval="game.gameTeams[1].team.name"></title>
+<py-include="html/header_simple.html">
+</head>
+
+<body>
+
+<py-include="html/top.html">
+
+<py-exec="assert myCoach and (myCoach in [gt.team.coach for gt in game.gameTeams] or myCoach.isAdmin()), 'You may not edit this game!'">
+
+<h2><py-eval="game.gameTeams[0].team.name"> vs. <py-eval="game.gameTeams[1].team.name"></h2>
+
+<p>
+<table>
+
+<tr>
+<th>Team</th>
+<th>Score</th>
+<th>Net Winnings</th>
+<th>FF</th>
+<th></th>
+</tr>
+
+<py-for="gameTeam in game.gameTeams">
+
+<tr>
+<form action="editGameTeam?id=<py-eval="str(gameTeam.id)">" method="post">
+<td><a href="<py-eval="gameTeam.team.view()">"><py-eval="gameTeam.team.name"></a></td>
+<td>
+<select name="INTscore">
+<py-for="score in xrange(10)">
+<option value=<py-eval="str(score)"><py-if="gameTeam.score == score"> selected</py-if>><py-eval="str(score)"></option>
+</py-for>
+</select>
+</td>
+<td>
+<select name="INTwinnings">
+<py-for="winnings in xrange(-200000, 200001, 5000)">
+<option value=<py-eval="str(winnings)"><py-if="gameTeam.winnings == winnings"> selected</py-if>><py-eval="gpFormat(winnings)"></option>
+</py-for>
+</select>
+</td>
+<td>
+<select name="ffChange">
+<py-for="ffChange in ['-1', '0', '+1']">
+<option value=<py-eval="ffChange"><py-if="gameTeam.ffChange == ffChange"> selected</py-if>><py-eval="ffChange"></option>
+</py-for>
+</select>
+</td>
+<td><input type="submit" value="Update" /></td>
+</form>
+</tr>
+
+</py-for>
+
+</table>
+</p>
+
+<h2>Game Info</h2>
+<p>
+<form action="<py-eval="game.edit()">" method="post">
+<table>
+
+<tr>
+<td>Season</td>
+<td><py-eval="game.season.name"></td>
+</tr>
+
+<py-exec="nowYear = time.localtime()[0]">
+<tr>
+<td>Date</td>
+<td>
+<select name="INTyear">
+<py-for="year in xrange(min(game.date.year, nowYear-1), max(game.date.year, nowYear+2))">
+<option value=<py-eval="str(year)"><py-if="year == game.date.year"> selected</py-if>><py-eval="str(year)"></option>
+</py-for>
+</select>
+<select name="INTmonth">
+<py-for="month in xrange(1, 13)">
+<option value=<py-eval="str(month)"><py-if="month == game.date.month"> selected</py-if>><py-eval="str(month)"></option>
+</py-for>
+</select>
+<select name="INTday">
+<py-for="day in xrange(1, 33)">
+<option value=<py-eval="str(day)"><py-if="day == game.date.day"> selected</py-if>><py-eval="str(day)"></option>
+</py-for>
+</select>
+</td>
+</tr>
+
+<tr>
+<td>Overtime</td>
+<td>
+<select name="INTovertime">
+<option value="0"<py-if="not game.overtime"> selected</py-if>>No</option>
+<option value="1"<py-if="game.overtime"> selected</py-if>>Yes</option>
+</select>
+</td>
+</tr>
+
+</table>
+
+<p>
+<textarea name="description" cols=60 rows=12><py-eval="game.description and str (game.description) or ''"></textarea>
+</p>
+
+<input type="submit" value="Update" />
+
+</form>
+</p>
+
+<py-for="gameTeam in game.gameTeams">
+
+<h2><py-eval="gameTeam.team.name"> Players</h2>
+
+<p>
+<form action="editGameTeamPlayers" method="post">
+<table>
+
+<tr>
+<th>#</th>
+<th>Player</th>
+<th>TD</th>
+<th>CAS</th>
+<th>COMP</th>
+<th>CAT</th>
+<th>INTER</th>
+<th>MVP</th>
+<th>SPP</th>
+<th>Injury</th>
+</tr>
+
+<py-if="gameTeam.players">
+
+<py-for="i, gameTeamPlayer in enumerate(gameTeam.players)">
+<py-code="
+player = gameTeamPlayer.player
+">
+
+<tr<py-if="i%2"> class="shade"</py-if>>
+<td><py-eval="str(gameTeamPlayer.player.number) or '<i>?</i>'"></td>
+<td><py-eval="gameTeamPlayer.player.htmlName()"></td>
+<td><input type="text" name="INT<py-eval="'%9d'%gameTeamPlayer.id">td" value="<py-eval="str(gameTeamPlayer.td)">" size="2" /></td>
+<td><input type="text" name="INT<py-eval="'%9d'%gameTeamPlayer.id">cas" value="<py-eval="str(gameTeamPlayer.cas)">" size="2" /></td>
+<td><input type="text" name="INT<py-eval="'%9d'%gameTeamPlayer.id">comp" value="<py-eval="str(gameTeamPlayer.comp)">" size="2" /></td>
+<td><input type="text" name="INT<py-eval="'%9d'%gameTeamPlayer.id">cat" value="<py-eval="str(gameTeamPlayer.cat)">" size="2" /></td>
+<td><input type="text" name="INT<py-eval="'%9d'%gameTeamPlayer.id">inter" value="<py-eval="str(gameTeamPlayer.inter)">" size="2" /></td>
+<td><input type="text" name="INT<py-eval="'%9d'%gameTeamPlayer.id">mvp" value="<py-eval="str(gameTeamPlayer.mvp)">" size="2" /></td>
+<td><py-include="html/spp.html"></td>
+<td>
+<select name="<py-eval="'%9d'%gameTeamPlayer.id">injury">
+<py-for="injury in ['', 'BH', 'MNG', 'NI', '-1MA', '-1AV', '-1AG', '-1ST', 'DEAD']">
+<option value="<py-eval="injury">" <py-if="injury == gameTeamPlayer.injury">selected</py-if> ><py-eval="injury"></option>
+</py-for>
+</select>
+<td></td>
+</td>
+</tr>
+
+</py-for>
+
+</py-if><py-else>
+
+<td colspan="10"><i>No game players</i></td>
+
+</py-else>
+
+</table>
+<input type="submit" value="Update" />
+</form>
+</p>
+
+</py-for>
+
+<py-include="html/bottom.html">
+
+</body>
+
+</html>

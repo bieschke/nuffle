@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
+
+<head>
+<title>Season Admin</title>
+<py-include="html/header_simple.html">
+</head>
+
+<body>
+
+<py-include="html/top.html">
+
+<py-exec="assert myCoach and myCoach.isAdmin(), 'You are not administrator!'">
+
+<h2>Create New Seasons</h2>
+<p>
+<form action="/season/create" method="post">
+Create Season:
+<input type="text" name="name" />
+<input type="submit" value="Create" />
+</form>
+</p>
+
+<h2>Modify Existing Seasons</h2>
+<p>
+<table>
+
+<tr>
+<th>Season</th>
+<th>Teams</th>
+<th>Games</th>
+<th></th>
+</tr>
+
+<py-if="seasons.count()">
+
+<py-for="i, season in enumerate(seasons)">
+
+<tr<py-if="i % 2"> class="shade"</py-if>>
+<td><a href="<py-eval="season.view()">"><py-eval="season.name"></a></td>
+<td><py-eval="str(len(season.teams))"></td>
+<td><py-eval="str(len(season.games))"></td>
+<td><a class="action" href="<py-eval="season.edit()">">[edit]</a></td>
+</tr>
+
+</py-for>
+
+</py-if><py-else>
+
+<tr>
+<td colspan="4"><i>No Seasons</i></td>
+</tr>
+
+</py-else>
+
+</table>
+</p>
+
+<py-include="html/bottom.html">
+
+</body>
+
+</html>

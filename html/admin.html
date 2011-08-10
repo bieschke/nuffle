@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
+
+<head>
+<title>Admin</title>
+<py-include="html/header_simple.html">
+</head>
+
+<body>
+
+<py-include="html/top.html">
+
+<py-exec="assert myCoach and myCoach.isAdmin(), 'You are not administrator!'">
+
+<h2>What do you need to Admin?</h2>
+<ul>
+<li><a href="/coach/admin/">Coaches</a></li>
+<li><a href="/season/admin/">Seasons</a></li>
+<li><a href="/medal/admin/">Medals</a></li>
+</ul>
+
+<py-include="html/bottom.html">
+
+</body>
+
+</html>

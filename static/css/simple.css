@@ -1,0 +1,15 @@
+
+#league_status {
+  display: none;
+  width: 0%;
+}
+
+#content {
+  border-left: none;
+  width: 75%;
+}
+
+#my_status {
+  width: 25%;
+}
+

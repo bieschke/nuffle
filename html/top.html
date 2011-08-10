@@ -1,0 +1,84 @@
+
+<py-exec="import time">
+
+<div id="header">
+
+<h1 id="logo">
+<a href="/"><py-eval="cfg.get('nuffle', 'league.name')"></a>
+</h1>
+
+<table id="navbar">
+
+<tr>
+
+<td><a href="/">HOME</a></td>
+<td><a href="/league">LEAGUE</a></td>
+<td><a href="/season/id/<py-eval="str(cfg.getint('nuffle', 'league.season'))">">SEASON</a></td>
+<td><a href="/coach/stats">COACHES</a></td>
+<td><a href="/team/stats">TEAMS</a></td>
+<td><a href="/race/stats">RACES</a></td>
+
+<td style="text-align: right">
+
+<py-if="cherrypy.session.has_key('username')">
+<py-exec="myCoach = Coach.byUsername(cherrypy.session['username'])">
+
+<font color="#000066"><i>Welcome</i></font> <a href="<py-eval="myCoach.edit()">">[<py-eval="myCoach.realname or 'Unknown Somebody'">]</a>
+<py-if="myCoach.isAdmin()"><a href="/admin/">[Admin]</a></py-if>
+<a href="/logout">[Logout]</a>
+
+</py-if><py-else>
+
+<py-exec="myCoach = None">
+
+<form action="/login" method="post">
+
+<select name="username">
+<py-for="coachOption in Coach.select(orderBy='username')">
+<option value="<py-eval="coachOption.username">"><py-eval="coachOption.username"></option>
+</py-for>
+</select>
+<input type="password" name="password" />
+<input type="submit" value="Login" />
+
+</form>
+
+</py-else>
+
+</td>
+
+</tr>
+
+</table><!-- table#navbar <py-eval="str(time.time())"> -->
+
+</div><!-- div#header -->
+
+<table id="main">
+
+<tr>
+
+<td id="league_status">
+
+<py-code="
+
+TEAMS = {}
+for aTeam in Team.select():
+	TEAMS[aTeam.id] = aTeam
+
+GAME_TEAMS = {}
+for aGameTeam in GameTeam.select():
+	if not GAME_TEAMS.has_key(aGameTeam.gameID):
+		GAME_TEAMS[aGameTeam.gameID] = []
+	GAME_TEAMS[aGameTeam.gameID].append(aGameTeam)
+">
+
+<py-include="html/current_standings.html">
+
+<py-include="html/recent_games.html">
+
+<py-include="html/upcoming_games.html">
+
+</td><!-- td#league_status -->
+
+<td id="content">
+

@@ -1,0 +1,10 @@
+#!/bin/env python2.4
+__doc__ = '''Print nuffle configuration options to stdout.'''
+if __name__ == '__main__':
+	import ConfigParser, os
+	cfg = ConfigParser.ConfigParser()
+	cfg.read(['nuffle.cfg', os.path.join('..', 'nuffle.cfg')])
+	for name, value in cfg.items('nuffle'):
+		print 'export NUFFLE_%s=%r;' % (name.upper().replace('.', '_'), value)
+else:
+	raise SystemExit, 'This program serves no purpose as a module.'
