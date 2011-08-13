@@ -1,8 +1,5 @@
 # Nuffle Blood Bowl Web Manager
 
-$Date: 2006/06/03 23:26:56 $
-$Revision: 1.4 $
-
 ## Summary
 
 The Nuffle Blood Bowl Web Manager is a web based system for tracking
@@ -127,5 +124,3 @@ hesitate to send me/us an email if you run in to trouble.
 
 Eric Bieschke
 oberon7@users.sourceforge.net
-
-$Header: /cvsroot/nuffle/python/README.txt,v 1.4 2006/06/03 23:26:56 oberon7 Exp $
