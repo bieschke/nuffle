@@ -1,4 +1,4 @@
-#!/bin/env python2.4
+#!/bin/env python
 __doc__ = '''Print nuffle configuration options to stdout.'''
 if __name__ == '__main__':
 	import ConfigParser, os

@@ -2,7 +2,7 @@
 # Dump the Nuffle database into a backup directory.
 
 cd `dirname ${0}` || exit 1
-eval `python2.4 ./env || echo exit 1`
+eval `python ./env || echo exit 1`
 
 : ${NUFFLE_DB_HOST:?"You must set the environment variable NUFFLE_DB_HOST to use this command."}
 : ${NUFFLE_DB_USER:?"You must set the environment variable NUFFLE_DB_USER to use this command."}

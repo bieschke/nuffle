@@ -2,7 +2,7 @@
 # Start the Nuffle Blood Bowl Web Manager.
 
 cd `dirname ${0}` || exit 1
-eval `python2.4 ./env || echo exit 1`
+eval `python ./env || echo exit 1`
 
 : ${NUFFLE_DIR_ROOT:?"You must set the environment variable NUFFLE_DIR_ROOT to use this command."}
 : ${NUFFLE_PIDFILE:?"You must set the environment variable NUFFLE_PIDFILE to use this command."}
@@ -16,7 +16,7 @@ if [ -f "${NUFFLE_PIDFILE}" ]; then
 	fi
 fi
 
-PYTHON="`which python2.4`"
+PYTHON="`which python`"
 if [ -z "${PYTHON}" ]; then
 	echo "Python not found"
 	exit 1

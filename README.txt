@@ -87,7 +87,7 @@ MySQL you'll definitely need to modify the db uri configuration variable.
 Step 5: Create the Nuffle schema in your Nuffle database. Assuming
 you've managed to configure yourself correctly, just do this:
 
-python2.4 ./src/data.py
+python ./src/data.py
 
 The Python "data" module when executed directly will recreate all
 of the necessary tables in your database, and install a base set
@@ -104,7 +104,7 @@ psql -U nuffle nuffle < ./bin/createIndexes.sql
 
 Step 6: Launch the web manager:
 
-python2.4 ./src/server.py
+python ./src/server.py
 
 
 Step 7: Open your favorite web browser and navigate to:

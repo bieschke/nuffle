@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.4
+#!/usr/bin/env python
 __doc__ = '''Nuffle Blood Bowl Web Manager web server.'''
 
 import ConfigParser
