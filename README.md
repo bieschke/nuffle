@@ -1,11 +1,9 @@
-
-Nuffle Blood Bowl Web Manager
+# Nuffle Blood Bowl Web Manager
 
 $Date: 2006/06/03 23:26:56 $
 $Revision: 1.4 $
 
-
-Summary
+## Summary
 
 The Nuffle Blood Bowl Web Manager is a web based system for tracking
 teams or running a league for the Blood Bowl game created by Games
@@ -17,8 +15,7 @@ Bowl web manager you launch the web server, and then any number of
 people can connect to the Blood Bowl manager using a standard web
 browser. It's just like accessing any other website on the Internet.
 
-
-What You Need
+## What You Need
 
 Python 2.4: The web manager is implemented in Python. You want
 version 2.4. Earlier versions most definitely will not work without
@@ -42,39 +39,38 @@ this for you, so you likely don't need to install this yourself.
 Installation (Linux, Mac OSX, *nix)
 
 
-Step 1: Download the Nuffle Blood Bowl Web Manager from here:
+1: Download the Nuffle Blood Bowl Web Manager from here:
 
-http://sourceforge.net/project/showfiles.php?group_id=53815
-
-
-Step 2: Extract the downloaded file:
-
-tar xzf nuffle*.tar.gz
+  http://sourceforge.net/project/showfiles.php?group_id=53815
 
 
-Step 3: Create a database for Nuffle. If you're using MySQL, you
+2: Extract the downloaded file:
+
+    tar xzf nuffle*.tar.gz
+
+
+3: Create a database for Nuffle. If you're using MySQL, you
 want to do something like this:
 
-shell> mysql -u root -p mysql
-mysql> create user nuffle identified by 'nuffle';
+    shell> mysql -u root -p mysql
+    mysql> create user nuffle identified by 'nuffle';
 
-shell> mysql -u nuffle -p
-mysql> create database nuffle;
+    shell> mysql -u nuffle -p
+    mysql> create database nuffle;
 
 --OR--
 
-createuser nuffle
+    createuser nuffle
+    createdb -U nuffle nuffle
 
-createdb -U nuffle nuffle
 
-
-Step 4: Create your configuration files. Sample configuration files
+4: Create your configuration files. Sample configuration files
 are provided for you and are located in the root directory for
 Nuffle.  Nuffle expects your configuration files to be located in
 the root directory for nuffle, so start by copying the samples:
 
-cp nuffle.cfg.sample nuffle.cfg
-cp cherrypy.cfg.sample cherrypy.cfg
+    cp nuffle.cfg.sample nuffle.cfg
+    cp cherrypy.cfg.sample cherrypy.cfg
 
 Then, open both of these files and poke around. At the very least you'll
 need to replace all references to the "/home/nuffle" directory and replace
@@ -84,10 +80,10 @@ database/account that you just created. If you're using Postgres and not
 MySQL you'll definitely need to modify the db uri configuration variable.
 
 
-Step 5: Create the Nuffle schema in your Nuffle database. Assuming
+5: Create the Nuffle schema in your Nuffle database. Assuming
 you've managed to configure yourself correctly, just do this:
 
-python ./src/data.py
+    python ./src/data.py
 
 The Python "data" module when executed directly will recreate all
 of the necessary tables in your database, and install a base set
@@ -95,30 +91,26 @@ of starting data (races, skills, etc).
 
 Now create your database indexes:
 
-mysql -u nuffle -p nuffle < ./bin/createIndexes.sql
+    mysql -u nuffle -p nuffle < ./bin/createIndexes.sql
 
 --OR--
 
-psql -U nuffle nuffle < ./bin/createIndexes.sql
+    psql -U nuffle nuffle < ./bin/createIndexes.sql
 
 
-Step 6: Launch the web manager:
+6: Launch the web manager:
 
-python ./src/server.py
-
-
-Step 7: Open your favorite web browser and navigate to:
-
-http://localhost:8042/
+    python ./src/server.py
 
 
-Step 8: Whew, all done. You should be staring at the frontpage of
+7: Open your favorite web browser and navigate to http://localhost:8042/
+
+8: Whew, all done. You should be staring at the frontpage of
 your very own Nuffle installation. You'll want to login as user
 "nuffle" password "nuffle". Then click on "[Admin]" to begin creating
 coaches and teams.
 
-
-Installation (Windows)
+## Installation (Windows)
 
 I don't personally own any Windows computers, so I haven't been able to
 try installing the web manager on a Windows machine. There's nothing
@@ -127,18 +119,15 @@ attempt (and better yet, succeed) at installing on a Windows machine,
 please drop me a note about any hiccups along the way.  I'll update this
 document with your experience.
 
-
 Contact Information
 
 Website: http://nuffle.sourceforge.net/
 Email: nuffle-developers@lists.sourceforge.net
-
 
 That's it! Good luck. May all your injuries be Badly Hurt. Don't
 hesitate to send me/us an email if you run in to trouble.
 
 Eric Bieschke
 oberon7@users.sourceforge.net
-
 
 $Header: /cvsroot/nuffle/python/README.txt,v 1.4 2006/06/03 23:26:56 oberon7 Exp $
