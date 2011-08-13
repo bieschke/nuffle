@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.4
+#!/usr/bin/env python
 __doc__ = '''Read data from a legacy schema, and insert data into the new schema.'''
 
 import MySQLdb, sys

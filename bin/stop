@@ -2,7 +2,7 @@
 # Stop the Nuffle Blood Bowl Web Manager.
 
 cd `dirname ${0}` || exit 1
-eval `python2.4 ./env || echo exit 1`
+eval `python ./env || echo exit 1`
 
 : ${NUFFLE_PIDFILE:?"You must set the environment variable NUFFLE_PIDFILE to use this command."}
 
