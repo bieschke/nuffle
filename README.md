@@ -1,6 +1,6 @@
 # Nuffle Blood Bowl Web Manager
 
-$Date: 2006/06/03 23.26.56 $
+$Date: 2006/06/03 23:26:56 $
 $Revision: 1.4 $
 
 ## Summary
@@ -17,7 +17,7 @@ browser. It's just like accessing any other website on the Internet.
 
 ## What You Need
 
-Python 2.4. The web manager is implemented in Python. You want
+Python 2.4: The web manager is implemented in Python. You want
 version 2.4. Earlier versions most definitely will not work without
 some amount of hackery, as function decorators (see PEP 318) were
 used in the implementation. Python versions beyond 2.4 might work,
@@ -39,17 +39,17 @@ this for you, so you likely don't need to install this yourself.
 Installation (Linux, Mac OSX, *nix)
 
 
-1. Download the Nuffle Blood Bowl Web Manager from here:
+1: Download the Nuffle Blood Bowl Web Manager from here:
 
   http://sourceforge.net/project/showfiles.php?group_id=53815
 
 
-2. Extract the downloaded file:
+2: Extract the downloaded file:
 
     tar xzf nuffle*.tar.gz
 
 
-3. Create a database for Nuffle. If you're using MySQL, you
+3: Create a database for Nuffle. If you're using MySQL, you
 want to do something like this:
 
     shell> mysql -u root -p mysql
@@ -64,7 +64,7 @@ want to do something like this:
     createdb -U nuffle nuffle
 
 
-4. Create your configuration files. Sample configuration files
+4: Create your configuration files. Sample configuration files
 are provided for you and are located in the root directory for
 Nuffle.  Nuffle expects your configuration files to be located in
 the root directory for nuffle, so start by copying the samples:
@@ -80,7 +80,7 @@ database/account that you just created. If you're using Postgres and not
 MySQL you'll definitely need to modify the db uri configuration variable.
 
 
-5. Create the Nuffle schema in your Nuffle database. Assuming
+5: Create the Nuffle schema in your Nuffle database. Assuming
 you've managed to configure yourself correctly, just do this:
 
     python ./src/data.py
@@ -98,14 +98,14 @@ Now create your database indexes:
     psql -U nuffle nuffle < ./bin/createIndexes.sql
 
 
-6. Launch the web manager:
+6: Launch the web manager:
 
     python ./src/server.py
 
 
-7. Open your favorite web browser and navigate to http://localhost:8042/
+7: Open your favorite web browser and navigate to http://localhost:8042/
 
-8. Whew, all done. You should be staring at the frontpage of
+8: Whew, all done. You should be staring at the frontpage of
 your very own Nuffle installation. You'll want to login as user
 "nuffle" password "nuffle". Then click on "[Admin]" to begin creating
 coaches and teams.
@@ -130,4 +130,4 @@ hesitate to send me/us an email if you run in to trouble.
 Eric Bieschke
 oberon7@users.sourceforge.net
 
-$Header: /cvsroot/nuffle/python/README.txt,v 1.4 2006/06/03 23.26.56 oberon7 Exp $
+$Header: /cvsroot/nuffle/python/README.txt,v 1.4 2006/06/03 23:26:56 oberon7 Exp $
