@@ -17,11 +17,10 @@ browser. It's just like accessing any other website on the Internet.
 
 ## What You Need
 
-Python 2.4: The web manager is implemented in Python. You want
-version 2.4. Earlier versions most definitely will not work without
-some amount of hackery, as function decorators (see PEP 318) were
-used in the implementation. Python versions beyond 2.4 might work,
-but they don't exist yet, so I can't be sure.
+Python >=2.4: The web manager is implemented in Python. You want
+at least version 2.4. Earlier versions most definitely will not work
+without some amount of hackery, as function decorators (see PEP 318)
+were used in the implementation.
 
 MySQL and MySQLdb --OR-- Postgres and psycopg
 
