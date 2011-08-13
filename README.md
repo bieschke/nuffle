@@ -35,8 +35,7 @@ database. Most installations of Python or your database will install
 this for you, so you likely don't need to install this yourself.
 
 
-Installation (Linux, Mac OSX, *nix)
-
+## Installation (Linux, Mac OSX, *nix)
 
 1: Download the Nuffle Blood Bowl Web Manager from here:
 
